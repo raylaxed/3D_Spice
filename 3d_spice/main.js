@@ -65,8 +65,21 @@ const materialSides = new THREE.MeshStandardMaterial({
   side: THREE.DoubleSide,
 });
 
+const grid = new THREE.GridHelper(10, 10);
+scene.add(grid);
+
+
 //generates a room taking in 3 Parameters for XYZ scaling and 3 Parameters for XYZ offset
 function generaterRoom(xWidth, xDepth, xHeight, offsetX, offsetY, offsetZ) {
+  
+  console.log(xWidth)
+  console.log(xDepth)
+  console.log(xHeight)
+  console.log(offsetX)
+  console.log(offsetY)
+  console.log(offsetZ)
+
+
   const meshFloor = new THREE.Mesh(
     new THREE.PlaneGeometry(xWidth, xDepth, 64, 64),
     materialFloor
@@ -105,41 +118,46 @@ function generaterRoom(xWidth, xDepth, xHeight, offsetX, offsetY, offsetZ) {
   const light = new THREE.PointLight(0xffffff, 10, 100);
   light.position.set(offsetX, offsetY+1.4, offsetZ);
   scene.add(light);
+  
+
+const meshRightPainting = new THREE.Mesh(
+  new THREE.PlaneGeometry(xWidth/3, xHeight/3, 64, 64),
+  materialPlane
+);
+meshRightPainting.rotateY(Math.PI / 2);
+meshRightPainting.position.set(offsetX+xWidth/2-0.01, offsetY, offsetZ);
+
+const meshLeftPainting = new THREE.Mesh(
+  new THREE.PlaneGeometry(xWidth/3, xHeight/3, 64, 64),
+  materialPlane
+);
+meshLeftPainting.rotateY(Math.PI / 2);
+meshLeftPainting.position.set(offsetX-xWidth/2+0.01, offsetY, offsetZ);
+
+const meshBackPainting = new THREE.Mesh(
+  new THREE.PlaneGeometry(xWidth/3, xHeight/3, 64, 64),
+  materialPlane
+);
+meshBackPainting.position.set(offsetX, offsetY, offsetZ-xDepth/2+0.01);
+
+
+scene.add(meshRightPainting);
+scene.add(meshLeftPainting);
+scene.add(meshBackPainting);
+
 
   scene.add(meshFloor);
   scene.add(meshRight);
   scene.add(meshLeft);
   scene.add(meshBack);
   scene.add(meshTop);
+  console.log("generating room")
   return scene;
 }
 
 generaterRoom(3, 3,3 , 0, 0, 0);
 
-const meshRightPainting = new THREE.Mesh(
-  new THREE.PlaneGeometry(1, 1, 64, 64),
-  materialPlane
-);
-meshRightPainting.rotateY(Math.PI / 2);
-meshRightPainting.position.set(1.45, 0, 0);
 
-const meshLeftPainting = new THREE.Mesh(
-  new THREE.PlaneGeometry(1, 1, 64, 64),
-  materialPlane
-);
-meshLeftPainting.rotateY(Math.PI / 2);
-meshLeftPainting.position.set(-1.45, 0, 0);
-
-const meshBackPainting = new THREE.Mesh(
-  new THREE.PlaneGeometry(1, 1, 64, 64),
-  materialPlane
-);
-meshBackPainting.position.set(0, 0, -1.45);
-
-
-scene.add(meshRightPainting);
-scene.add(meshLeftPainting);
-scene.add(meshBackPainting);
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
@@ -157,8 +175,34 @@ canvasRectangles.width = 800; // adjust the width and height as needed
 canvasRectangles.height = 600;
 document.body.appendChild(canvasRectangles);
 
+// Set the background color of the canvas to grey
+canvasRectangles.style.backgroundColor = "grey";
+
 // Get the 2D drawing context for the new canvas
 const ctxRectangles = canvasRectangles.getContext("2d");
+
+// Draw the coordinate axes
+ctxRectangles.beginPath();
+ctxRectangles.strokeStyle = "black";
+ctxRectangles.lineWidth = 2;
+ctxRectangles.moveTo(0, canvasRectangles.height / 2);
+ctxRectangles.lineTo(canvasRectangles.width, canvasRectangles.height / 2);
+ctxRectangles.stroke();
+
+ctxRectangles.beginPath();
+ctxRectangles.moveTo(canvasRectangles.width / 2, 0);
+ctxRectangles.lineTo(canvasRectangles.width / 2, canvasRectangles.height);
+ctxRectangles.stroke();
+
+// Add some text to label the axes
+ctxRectangles.font = "18px Arial";
+ctxRectangles.textAlign = "center";
+ctxRectangles.textBaseline = "middle";
+ctxRectangles.fillStyle = "black";
+ctxRectangles.fillText("X", canvasRectangles.width / 2, 20);
+ctxRectangles.fillText("Y", 20, canvasRectangles.height / 2);
+
+// ... rest of the code ...
 
 // Define a function to draw a rectangle on the new canvas
 function drawRectangle(x, y, width, height, color) {
@@ -174,6 +218,9 @@ function clearCanvasRectangles() {
 let isDrawing = false;
 let startX = 0;
 let startY = 0;
+let endX = 0;
+let endY = 0;
+
 
 canvasRectangles.addEventListener("mousedown", (event) => {
   const rect = canvasRectangles.getBoundingClientRect();
@@ -196,5 +243,22 @@ canvasRectangles.addEventListener("mousemove", (event) => {
 
 canvasRectangles.addEventListener("mouseup", () => {
   isDrawing = false;
+  console.log("draw")
+  let xWidth = Math.abs(endX - startX);
+  let withHelper =Math.abs(endX - startX)/2;
+  //console.log(xWidth)
+  xWidth = xWidth / (canvasRectangles.width / 2);
+
+  //console.log(xWidth)
+  let xDepth = Math.abs(endY - startY);
+  let depthHelper =Math.abs(endX - startX)/2;
+  //console.log(xDepth)
+  xDepth = xDepth / (canvasRectangles.height / 2);
+  //console.log(xDepth)
+
+  const offsetX = startX + (xWidth / 2);
+  const offsetY = startY + (xDepth / 2);
+  generaterRoom(xWidth, xDepth, 3, (-canvasRectangles.width/2 + offsetX)/100, 0, (-canvasRectangles.height/2 + offsetY)/100);
+
 });
 animate();
