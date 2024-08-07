@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, 800 / 600);
 camera.position.set(0, 0, 10);
@@ -48,19 +49,22 @@ const materialPlane = new THREE.MeshStandardMaterial({
   opacity: 0.5,
   side: THREE.DoubleSide,
 });
-// Create a dark red material for the floor
+
+
+//MATERIALS FOR ROOM
 const materialFloor = new THREE.MeshStandardMaterial({
-  color: 0x8b0000, // Dark red color
+  color: 0x8b0000, 
   side: THREE.DoubleSide,
 });
 const materialTop = new THREE.MeshStandardMaterial({
-  color: 0xf8f8e7, // Dark red color
+  color: 0xf8f8e7, 
   side: THREE.DoubleSide,
 });
 const materialSides = new THREE.MeshStandardMaterial({
-  color: 0x666666, // Dark red color
+  color: 0x666666, 
   side: THREE.DoubleSide,
 });
+
 //generates a room taking in 3 Parameters for XYZ scaling and 3 Parameters for XYZ offset
 function generaterRoom(xWidth, xDepth, xHeight, offsetX, offsetY, offsetZ) {
   const meshFloor = new THREE.Mesh(
@@ -109,6 +113,7 @@ function generaterRoom(xWidth, xDepth, xHeight, offsetX, offsetY, offsetZ) {
   scene.add(meshTop);
   return scene;
 }
+
 generaterRoom(3, 3,3 , 0, 0, 0);
 
 const meshRightPainting = new THREE.Mesh(
@@ -131,8 +136,6 @@ const meshBackPainting = new THREE.Mesh(
 );
 meshBackPainting.position.set(0, 0, -1.45);
 
-//mesh.rotate(90)
-//mesh.position.set()
 
 scene.add(meshRightPainting);
 scene.add(meshLeftPainting);
@@ -145,4 +148,53 @@ function animate() {
   renderer.render(scene, camera);
 }
 
+
+
+
+// Create a new canvas element
+const canvasRectangles = document.createElement("canvas");
+canvasRectangles.width = 800; // adjust the width and height as needed
+canvasRectangles.height = 600;
+document.body.appendChild(canvasRectangles);
+
+// Get the 2D drawing context for the new canvas
+const ctxRectangles = canvasRectangles.getContext("2d");
+
+// Define a function to draw a rectangle on the new canvas
+function drawRectangle(x, y, width, height, color) {
+  ctxRectangles.fillStyle = color;
+  ctxRectangles.fillRect(x, y, width, height);
+}
+
+// Define a function to clear the new canvas
+function clearCanvasRectangles() {
+  ctxRectangles.clearRect(0, 0, canvasRectangles.width, canvasRectangles.height);
+}
+
+let isDrawing = false;
+let startX = 0;
+let startY = 0;
+
+canvasRectangles.addEventListener("mousedown", (event) => {
+  const rect = canvasRectangles.getBoundingClientRect();
+  if (rect.left <= event.clientX && event.clientX <= rect.right &&
+      rect.top <= event.clientY && event.clientY <= rect.bottom) {
+    isDrawing = true;
+    startX = event.clientX - rect.left;
+    startY = event.clientY - rect.top;
+  }
+});
+
+canvasRectangles.addEventListener("mousemove", (event) => {
+  if (isDrawing) {
+    const rect = canvasRectangles.getBoundingClientRect();
+    const endX = event.clientX - rect.left;
+    const endY = event.clientY - rect.top;
+    drawRectangle(startX, startY, endX - startX, endY - startY, "red"); // draw the rectangle
+  }
+});
+
+canvasRectangles.addEventListener("mouseup", () => {
+  isDrawing = false;
+});
 animate();
