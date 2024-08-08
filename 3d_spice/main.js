@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
 const scene = new THREE.Scene();
@@ -12,6 +13,13 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(800, 600);
 
+
+const loader = new GLTFLoader();
+/*
+loader.load('path/to/model.gltf', (gltf) => {
+  scene.add(gltf.scene);
+});
+*/
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
