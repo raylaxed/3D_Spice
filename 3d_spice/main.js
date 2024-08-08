@@ -121,14 +121,14 @@ function generaterRoom(xWidth, xDepth, xHeight, offsetX, offsetY, offsetZ) {
   
 
 const meshRightPainting = new THREE.Mesh(
-  new THREE.PlaneGeometry(xWidth/3, xHeight/3, 64, 64),
+  new THREE.PlaneGeometry(xDepth/3, xHeight/3, 64, 64),
   materialPlane
 );
 meshRightPainting.rotateY(Math.PI / 2);
 meshRightPainting.position.set(offsetX+xWidth/2-0.01, offsetY, offsetZ);
 
 const meshLeftPainting = new THREE.Mesh(
-  new THREE.PlaneGeometry(xWidth/3, xHeight/3, 64, 64),
+  new THREE.PlaneGeometry(xDepth/3, xHeight/3, 64, 64),
   materialPlane
 );
 meshLeftPainting.rotateY(Math.PI / 2);
@@ -155,7 +155,7 @@ scene.add(meshBackPainting);
   return scene;
 }
 
-generaterRoom(3, 3,3 , 0, 0, 0);
+//generaterRoom(3, 3,3 , 0, 0, 0);
 
 
 function animate() {
@@ -180,6 +180,8 @@ canvasRectangles.style.backgroundColor = "grey";
 
 // Get the 2D drawing context for the new canvas
 const ctxRectangles = canvasRectangles.getContext("2d");
+
+
 
 // Draw the coordinate axes
 ctxRectangles.beginPath();
@@ -220,7 +222,12 @@ let startX = 0;
 let startY = 0;
 let endX = 0;
 let endY = 0;
-
+let drawingEndX = 0;
+let drawingEndY = 0;
+let canvasOriginX = canvasRectangles.width/2;
+let canvasOriginY = canvasRectangles.height/2;
+console.log("originX:" + canvasOriginX)
+console.log("originY:" + canvasOriginY)
 
 canvasRectangles.addEventListener("mousedown", (event) => {
   const rect = canvasRectangles.getBoundingClientRect();
@@ -236,29 +243,43 @@ canvasRectangles.addEventListener("mousemove", (event) => {
   if (isDrawing) {
     const rect = canvasRectangles.getBoundingClientRect();
     const endX = event.clientX - rect.left;
+    console.log("startX:" + startX)
+
+    console.log("endX:" + endX)
+
     const endY = event.clientY - rect.top;
+    console.log("startY:" + startY)
+
+    console.log("endY:" + endY)
+    drawingEndX = endX;
+    drawingEndY = endY;
     drawRectangle(startX, startY, endX - startX, endY - startY, "red"); // draw the rectangle
   }
 });
 
 canvasRectangles.addEventListener("mouseup", () => {
   isDrawing = false;
-  console.log("draw")
-  let xWidth = Math.abs(endX - startX);
-  let withHelper =Math.abs(endX - startX)/2;
-  //console.log(xWidth)
-  xWidth = xWidth / (canvasRectangles.width / 2);
+  
+  console.log("draw3d")
 
-  //console.log(xWidth)
-  let xDepth = Math.abs(endY - startY);
-  let depthHelper =Math.abs(endX - startX)/2;
-  //console.log(xDepth)
-  xDepth = xDepth / (canvasRectangles.height / 2);
-  //console.log(xDepth)
+  console.log("startX:" + startX)
+  console.log("endX:" + drawingEndX)
 
-  const offsetX = startX + (xWidth / 2);
-  const offsetY = startY + (xDepth / 2);
-  generaterRoom(xWidth, xDepth, 3, (-canvasRectangles.width/2 + offsetX)/100, 0, (-canvasRectangles.height/2 + offsetY)/100);
+  console.log("startY:" + startY)
+  console.log("endY:" + drawingEndY)
+
+
+  console.log("originX:" + canvasOriginX)
+  console.log("originY:" + canvasOriginY)
+  let xWidth = Math.abs(drawingEndX - startX);
+  let xDepth = Math.abs(drawingEndY - startY);
+  const offsetX = xWidth/2;
+  const offsetY = xDepth/2;
+  let transformedPosX = startX + offsetX - canvasOriginX
+  let transformedPosY = startY + offsetY - canvasOriginY
+  generaterRoom(xWidth/100, xDepth/100, 1, ((transformedPosX)/100), 0, 
+  (transformedPosY/100));
+
 
 });
 animate();
