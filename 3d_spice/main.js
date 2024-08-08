@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
+
 
 /*                                                                                */
 /*                        Setup 2d Pictures                                       */
@@ -23,10 +25,10 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(800, 600);
 
 const loader = new GLTFLoader();
-
+/*
 loader.load("assets/LowPolyExport.glb", (gltf) => {
   scene.add(gltf.scene);
-});
+});*/
 
 //Controll type: only orbitControls
 //First Person Camera + Controls
@@ -110,6 +112,21 @@ let canvasOriginY = canvasRectangles.height / 2;
 console.log("originX:" + canvasOriginX);
 console.log("originY:" + canvasOriginY);
 
+
+// Create a button to clear the scene
+const clearButton = document.createElement("button");
+clearButton.textContent = "Clear Scene";
+document.body.appendChild(clearButton);
+
+clearButton.addEventListener("click", () => {
+  scene.children.forEach((child) => {
+    scene.remove(child);
+  });
+  controls.reset();
+  noiseTexture = generateNoiseTexture(64, 64);
+  materialPlane.map = noiseTexture;
+  renderer.render(scene, camera);
+});
 animate();
 
 function animate() {
