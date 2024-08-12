@@ -54,7 +54,7 @@ const materialFloor = new THREE.MeshStandardMaterial({
 });
 const materialTop = new THREE.MeshStandardMaterial({
   color: 0xf8f8e7,
-  side: THREE.DoubleSide,
+  //side: THREE.DoubleSide,
 });
 const materialSides = new THREE.MeshStandardMaterial({
   color: 0x666666,
@@ -168,8 +168,8 @@ function generaterRoom(xWidth, xDepth, xHeight, offsetX, offsetY, offsetZ) {
 
 
   //LIGHTS
-  const light = new THREE.PointLight(0xffffff, 10, 100);
-  light.position.set(offsetX, offsetY + 1.4, offsetZ);
+  const light = new THREE.PointLight(0xffffff, 5, 100);
+  light.position.set(offsetX, offsetY , offsetZ);
   scene.add(light);
 
 
@@ -296,7 +296,7 @@ canvasRectangles.addEventListener("mouseup", () => {
     xDepth / 100,
     1,
     transformedPosX / 100,
-    0,
+    .5,
     transformedPosY / 100
   );
 });
