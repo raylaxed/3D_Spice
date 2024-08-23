@@ -66,21 +66,6 @@ export function initCanvas() {
   });
 }
 
-// Create a button to switch controls
-const switchControlsButton = document.createElement("button");
-switchControlsButton.textContent = "Switch to Orbit Controls";
-document.body.appendChild(switchControlsButton);
-
-switchControlsButton.addEventListener("click", () => {
-  if (controls.currentControlType === 'firstPerson') {
-    switchControlsButton.textContent = "Switch to Orbit Controls";
-    controls.switchControls('orbit');
-  } else if (controls.currentControlType === 'orbit') {
-    switchControlsButton.textContent = "Switch to First Person Controls";
-    controls.switchControls('firstPerson');
-  }
-});
-
 // Define a function to draw a rectangle on the new canvas
 function drawRectangle(x, y, width, height, color) {
   ctxRectangles.fillStyle = color;
