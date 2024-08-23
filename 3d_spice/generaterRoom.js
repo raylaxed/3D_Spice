@@ -1,17 +1,26 @@
 import * as THREE from "three";
-import {scene } from './scene.js';
+import { scene } from "./scene.js";
 import { noiseTexture } from "./animate.js";
 
-
-//export let noiseTexture;
-//noiseTexture = generateNoiseTexture(64, 64);
-//MATERIALS
+const materialFloor = new THREE.MeshStandardMaterial({
+  color: 0x8b0000,
+  side: THREE.DoubleSide,
+});
+const materialTop = new THREE.MeshStandardMaterial({
+  color: 0xf8f8e7,
+  //side: THREE.DoubleSide,
+});
+const materialSides = new THREE.MeshStandardMaterial({
+  color: 0x666666,
+  side: THREE.DoubleSide,
+});
+//export noise material bc of updating
 export let materialPlane = new THREE.MeshStandardMaterial({
-    map: noiseTexture,
-    transparent: true,
-    opacity: 0.5,
-    side: THREE.DoubleSide,
-  });
+  map: noiseTexture,
+  transparent: true,
+  opacity: 0.5,
+  side: THREE.DoubleSide,
+});
 
 export function generaterRoom(
   xWidth,
@@ -21,23 +30,6 @@ export function generaterRoom(
   offsetY,
   offsetZ
 ) {
-  
-
-  
-
-  const materialFloor = new THREE.MeshStandardMaterial({
-    color: 0x8b0000,
-    side: THREE.DoubleSide,
-  });
-  const materialTop = new THREE.MeshStandardMaterial({
-    color: 0xf8f8e7,
-    //side: THREE.DoubleSide,
-  });
-  const materialSides = new THREE.MeshStandardMaterial({
-    color: 0x666666,
-    side: THREE.DoubleSide,
-  });
-
   console.log("draw3d");
   console.log(xWidth);
   console.log(xDepth);
@@ -47,7 +39,7 @@ export function generaterRoom(
   console.log(offsetZ);
 
   //LIGHTS
-  const light = new THREE.PointLight(0xffffff, 5, 100);
+  const light = new THREE.PointLight(0xffffff, 3, 100);
   light.position.set(offsetX, offsetY, offsetZ);
   scene.add(light);
 
